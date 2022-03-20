@@ -38,9 +38,16 @@ Route::get('/obtener-distritos/{provincia}', [DistritoController::class, 'Obtene
 Route::post('/crear-usuario', [UsuarioController::class, 'CrearUsuario']);
 
 // Route::middleware(['auth:sanctum'])->group(function () {
-    // USUARIO
-    Route::get('/obtener-usuario/{dni}', [UsuarioController::class, 'ObtenerUsuario']);
+    // USUARIO - MI PERFIL
+    Route::post('/obtener-usuario', [UsuarioController::class, 'ObtenerUsuario']);
     Route::post('/modificar-usuario/{dni}', [UsuarioController::class, 'ModificarUsuario']);
+    // USUARIO - VERIFICACIONES 
+    Route::post('/obtener-recetas', [RecetaController::class, 'ObtenerRecetas']);
+    Route::post('/obtener-diagnosticos', [DiagnosticoController::class, 'ObtenerDiagnosticos']);
+    Route::post('/crear-receta', [RecetaController::class, 'CrearReceta']);
+    Route::post('/crear-diagnostico', [DiagnosticoController::class, 'CrearDiagnostico']);
+    Route::post('/borrar-receta', [RecetaController::class, 'BorrarReceta']);
+    Route::post('/borrar-diagnostico', [DiagnosticoController::class, 'BorrarDiagnostico']);
     // ANUNCIOS
     Route::get('/obtener-anuncios', [AnuncioController::class, 'ObtenerAnuncios']);
     Route::post('/crear-anuncio/{dni}', [AnuncioController::class, 'CrearAnuncio']);

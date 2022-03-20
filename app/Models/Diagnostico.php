@@ -10,4 +10,6 @@ class Diagnostico extends Model
     use HasFactory;
 
     protected $table = 'diagnostico';
+
+    protected $primaryKey = 'id_diagnostico';
 }
