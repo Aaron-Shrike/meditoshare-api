@@ -16,7 +16,8 @@ class DepartamentoController extends Controller
     {
         try
         {
-            $consulta = Departamento::select('id_departamento', 'descripcion')->get();
+            $consulta = Departamento::select('id_departamento AS codigoDepartamento', 
+                'descripcion AS departamento')->get();
             
             return response($consulta);
         }

@@ -56,9 +56,10 @@ class AnuncioController extends Controller
         try
         {
             $consulta = 
-                Anuncio::select('id_anuncio', 'fecha_anuncio','nombre', 'descripcion', 
-                    'concentracion', 'presentacion', 'fecha_vencimiento', 'cantidad', 'requiere_receta',
-                    'requiere_diagnostico')
+                Anuncio::select('id_anuncio AS codigoAnuncio', 'fecha_anuncio AS fechaAnuncio','nombre', 
+                    'descripcion', 'concentracion', 'presentacion', 'fecha_vencimiento AS fechaVencimiento', 
+                    'cantidad', 'requiere_receta AS requiereReceta', 
+                    'requiere_diagnostico AS requiereDiagnostico')
                 ->where('dni_donante', '=', $dni)
                 ->orderBy('fecha_anuncio', 'DESC')
                 ->take(10)->get();

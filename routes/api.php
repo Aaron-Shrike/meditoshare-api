@@ -50,16 +50,16 @@ Route::post('/crear-usuario', [UsuarioController::class, 'CrearUsuario']);
     Route::post('/borrar-diagnostico', [DiagnosticoController::class, 'BorrarDiagnostico']);
     // ANUNCIOS
     Route::get('/obtener-anuncios', [AnuncioController::class, 'ObtenerAnuncios']);
-    Route::post('/crear-anuncio/{dni}', [AnuncioController::class, 'CrearAnuncio']);
-    Route::get('/mostrar-anuncios/{dni}', [AnuncioController::class, 'MostrarAnuncios']);
+    Route::post('/crear-anuncio', [AnuncioController::class, 'CrearAnuncio']);
+    Route::get('/obtener-anuncios/{dni}', [AnuncioController::class, 'ObtenerAnunciosUsuario']);
     // SOLICITUDES
-    Route::post('/mostrar-solicitudes', [SolicitudController::class, 'MostrarSolicitudes']);
-    Route::post('/mostrar-solicitudes-anuncio', [SolicitudController::class, 'MostrarSolicitudesAnuncio']);
+    Route::post('/obtener-solicitudes', [SolicitudController::class, 'ObtenerSolicitudes']);
+    Route::post('/obtener-solicitudes-anuncio', [SolicitudController::class, 'ObtenerSolicitudesAnuncio']);
     // PERFIL - SOLICITUD
-    Route::post('/obtener-perfil-usuario', [UsuarioController::class, 'ObtenerPerfilUsuario']);
-    Route::post('/obtener-recetas-usuario', [RecetaController::class, 'ObtenerRecetaUsuario']);
-    Route::post('/obtener-diagnosticos-usuario', [DiagnosticoController::class, 'ObtenerDiagnosticoUsuario']);
-    Route::post('/obtener-calificaciones-usuario', [SolicitudController::class, 'ObtenerCalificacionesUsuario']);
+    Route::post('/obtener-perfil-solicitante', [UsuarioController::class, 'ObtenerPerfilSolicitante']);
+    Route::post('/obtener-recetas-solicitante', [RecetaController::class, 'ObtenerRecetas']);
+    Route::post('/obtener-diagnosticos-solicitante', [DiagnosticoController::class, 'ObtenerDiagnosticos']);
+    Route::post('/obtener-calificaciones-solicitante', [SolicitudController::class, 'ObtenerCalificacionesSolicitante']);
 // });
 
 

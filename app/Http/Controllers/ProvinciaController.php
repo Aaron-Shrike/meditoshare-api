@@ -16,7 +16,7 @@ class ProvinciaController extends Controller
     {
         try
         {
-            $consulta = Provincia::select('id_provincia', 'descripcion')
+            $consulta = Provincia::select('id_provincia AS codigoProvincia', 'descripcion AS provincia')
                     ->where('id_departamento', '=', $departamento)
                     ->get();
             

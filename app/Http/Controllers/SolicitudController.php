@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Solicitud;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
 class SolicitudController extends Controller
 {
@@ -34,18 +35,59 @@ class SolicitudController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function MostrarSolicitudes(Request $request)
+    public function ObtenerSolicitudes(Request $request)
     {
         try
         {
+            $request->validate([
+                'dni' => 'required',
+            ]);
+
             $consulta = 
-                Solicitud::select('id_anuncio', 'id_estado', 'fecha_solicitud','fecha_estado', 
-                    'motivo_rechazo', 'puntaje', 'comentario')
+                Solicitud::select('id_anuncio AS codigoAnuncio', 'id_estado AS codigoEstado', 
+                    'fecha_solicitud AS fechaSolicitud','fecha_estado AS fechaEstado', 
+                    'motivo_rechazo AS motivoRechazo', 'puntaje', 'comentario')
                 ->where('dni_solicitante', '=', $request->dni)
                 ->orderBy('fecha_solicitud', 'DESC')
                 ->take(10)->get();
             
             return response($consulta);
+        }
+        catch (\Exception $ex) 
+        {
+            $data = $ex->getMessage();
+            
+            return response($data, 400);
+        }
+    }
+
+    public function ObtenerCalificacionesSolicitante(Request $request)
+    {
+        try
+        {
+            $request->validate([
+                'dniSolicitante' => 'required',
+            ]);
+
+            $data = array();
+
+            $consulta = 
+                Solicitud::select('solicitud.id_anuncio AS codigoAnuncio', 'fecha_estado AS fechaEstado', 
+                    'puntaje','comentario', 'anuncio.nombre AS nombreMedicamento')
+                ->join('anuncio', 'solicitud.id_anuncio', '=', 'anuncio.id_anuncio')
+                ->where('dni_solicitante', '=', $request->dniSolicitante)
+                ->where('id_estado','=', 3)
+                ->orderBy('fecha_estado', 'DESC')
+                ->take(10)->get();
+
+            $consulta2 = Solicitud::avg('puntaje');
+
+            $data = [
+                'puntajePromedio' => $consulta2,
+                'calificaciones' => $consulta
+            ];
+            
+            return response($data);
         }
         catch (\Exception $ex) 
         {

@@ -9,9 +9,7 @@ use Illuminate\Support\Facades\Storage;
 class RecetaController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * Regresa las recetas regisstradas del usuario autenticado o solicitante
      */
     public function ObtenerRecetas(Request $request)
     {
@@ -65,11 +63,11 @@ class RecetaController extends Controller
                 $directorio_usuario = strval($request->dniUsuario);
                 if(!Storage::disk('receta')->exists($directorio_usuario))
                 {
-                    Storage::makeDirectory($directorio_usuario);
+                    Storage::disk('receta')->makeDirectory($directorio_usuario);
                 }
                 
                 // Storage::disk('receta')->put($nueva_url_archivo, $imagen);
-                $ruta = public_path("recetas/" . $directorio_usuario . "/");
+                $ruta = storage_path("app/recetas/" . $directorio_usuario . "/");
                 $imagen->move($ruta, $nueva_url_archivo);
     
                 $obj->url_receta = $nueva_url_archivo; 

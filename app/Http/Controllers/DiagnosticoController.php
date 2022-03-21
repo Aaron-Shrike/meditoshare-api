@@ -65,10 +65,10 @@ class DiagnosticoController extends Controller
                 $directorio_usuario = strval($request->dniUsuario);
                 if(!Storage::disk('diagnostico')->exists($directorio_usuario))
                 {
-                    Storage::makeDirectory($directorio_usuario);
+                    Storage::disk('diagnostico')->makeDirectory($directorio_usuario);
                 }
                 
-                $ruta = public_path("diagnosticos/" . $directorio_usuario . "/");
+                $ruta = storage_path("app/diagnosticos/" . $directorio_usuario . "/");
                 $imagen->move($ruta, $nueva_url_archivo);
     
                 $obj->url_diagnostico = $nueva_url_archivo; 
@@ -77,7 +77,7 @@ class DiagnosticoController extends Controller
             $obj->save();
 
             $data = [
-                'codigoDiagnosticota' => $obj->id_diagnostico,
+                'codigoDiagnostico' => $obj->id_diagnostico,
                 'urlDiagnostico' => $obj->url_diagnostico
             ];
 

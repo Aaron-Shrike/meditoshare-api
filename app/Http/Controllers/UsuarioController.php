@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Solicitud;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -29,10 +30,11 @@ class UsuarioController extends Controller
                 if(Hash::check($request->contrasenia, $consulta['contrasenia']))
                 {
                     $consulta = 
-                        Usuario::select('nombre', 'apellido_paterno', 'apellido_materno', 
-                            'dni', 'fecha_nacimiento', 'usuario.id_departamento', 
-                            'departamento.descripcion AS departamento', 'usuario.id_provincia', 
-                            'provincia.descripcion AS provincia', 'usuario.id_distrito', 
+                        Usuario::select('nombre', 'apellido_paterno AS apellidoPaterno', 
+                            'apellido_materno AS apellidoMaterno', 'dni', 'fecha_nacimiento AS fechaNacimiento',
+                            'usuario.id_departamento AS codigoDepartamento', 
+                            'departamento.descripcion AS departamento', 'usuario.id_provincia AS codigoProvincia', 
+                            'provincia.descripcion AS provincia', 'usuario.id_distrito AS codigoDistrito', 
                             'distrito.descripcion AS distrito', 'direccion', 'telefono', 'correo')
                         ->join('departamento', 'usuario.id_departamento', '=', 'departamento.id_departamento')
                         ->join('provincia', 'usuario.id_provincia', '=', 'provincia.id_provincia')
@@ -40,25 +42,11 @@ class UsuarioController extends Controller
                         ->where('dni','=',$request->dni)
                         ->first();
                     
-                    $formato_fecha = date("d/m/Y", strtotime($consulta['fecha_nacimiento']));
+                    $formato_fecha = date("d/m/Y", strtotime($consulta['fechaNacimiento']));
 
-                    $data = [
-                        'nombre' => $consulta['nombre'],
-                        'apellidoPaterno' => $consulta['apellido_paterno'],
-                        'apellidoMaterno' => $consulta['apellido_materno'],
-                        'dni' => $consulta['dni'],
-                        'fechaNacimiento' => $consulta['fecha_nacimiento'],
-                        'formatoFechaNacimiento' => $formato_fecha,
-                        'codigoDepartamento' => $consulta['id_departamento'],
-                        'departamento' => $consulta['departamento'],
-                        'codigoProvincia' => $consulta['id_provincia'],
-                        'provincia' => $consulta['provincia'],
-                        'codigoDistrito' => $consulta['id_distrito'],
-                        'distrito' => $consulta['distrito'],
-                        'direccion' => $consulta['direccion'],
-                        'telefono' => $consulta['telefono'],
-                        'correo' => $consulta['correo'],
-                    ];
+                    $data = $consulta;
+
+                    $data['formatoFecha'] = $formato_fecha;
                 }
                 else
                 {
@@ -143,9 +131,59 @@ class UsuarioController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function ObtenerPerfilSolicitante(Request $request)
     {
-        //
+        try
+        {
+            $request->validate([
+                'dniUsuario' => 'required',
+                'dniSolicitante' => 'required',
+            ]);
+            
+            $data=array();
+
+            $consulta = 
+                Solicitud::join('anuncio', 'solicitud.id_anuncio', '=', 'anuncio.id_anuncio')
+                ->where('dni_solicitante','=', $request['dniSolicitante'])
+                ->where('anuncio.dni_donante','=', $request['dniUsuario'])
+                ->where('id_estado','=', 1)
+                ->count();
+
+            if($consulta > 0)
+            {
+                $consulta = 
+                    Usuario::select('nombre', 'apellido_paterno AS apellidoPaterno', 
+                        'apellido_materno AS apellidoMaterno', 'dni', 'fecha_nacimiento AS fechaNacimiento',
+                        'departamento.descripcion AS departamento', 'provincia.descripcion AS provincia',
+                        'distrito.descripcion AS distrito', 'direccion', 'telefono', 'correo')
+                    ->join('departamento', 'usuario.id_departamento', '=', 'departamento.id_departamento')
+                    ->join('provincia', 'usuario.id_provincia', '=', 'provincia.id_provincia')
+                    ->join('distrito', 'usuario.id_distrito', '=', 'distrito.id_distrito')
+                    ->where('dni','=', $request['dniSolicitante'])
+                    ->first();
+                
+                $formato_fecha = date("d/m/Y", strtotime($consulta['fechaNacimiento']));
+
+                $data = $consulta;
+
+                $data['formatoFecha'] = $formato_fecha;
+            }
+            else
+            {
+                $data = [
+                    'error' => false,
+                    'mensaje' => "El usuario no tiene solicitudes pendientes."
+                ];
+            }
+            
+            return response($data);
+        }
+        catch (\Exception $ex) 
+        {
+            $data = $ex->getMessage();
+            
+            return response($data, 400);
+        }
     }
 
     /**

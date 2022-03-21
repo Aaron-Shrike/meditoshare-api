@@ -16,7 +16,7 @@ class DistritoController extends Controller
     {
         try
         {
-            $consulta = Distrito::select('id_distrito', 'descripcion')
+            $consulta = Distrito::select('id_distrito AS codigoDistrito', 'descripcion AS distrito')
                     ->where('id_provincia', '=', $provincia)
                     ->get();
             
