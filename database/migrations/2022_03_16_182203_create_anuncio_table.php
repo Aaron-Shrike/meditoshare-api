@@ -19,7 +19,7 @@ class CreateAnuncioTable extends Migration
             $table->char('dni_donante', 8);
             $table->dateTime('fecha_anuncio');
             $table->string('nombre', 50);
-            $table->string('descripcion', 255);
+            $table->string('descripcion', 255)->nullable();
             $table->string('concentracion', 20);
             $table->string('presentacion', 20);
             $table->date('fecha_vencimiento'); //ver

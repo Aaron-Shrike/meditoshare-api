@@ -51,7 +51,7 @@ Route::post('/crear-usuario', [UsuarioController::class, 'CrearUsuario']);
     // ANUNCIOS
     Route::get('/obtener-anuncios', [AnuncioController::class, 'ObtenerAnuncios']);
     Route::post('/crear-anuncio', [AnuncioController::class, 'CrearAnuncio']);
-    Route::get('/obtener-anuncios/{dni}', [AnuncioController::class, 'ObtenerAnunciosUsuario']);
+    Route::post('/obtener-anuncios', [AnuncioController::class, 'ObtenerAnunciosUsuario']);
     // SOLICITUDES
     Route::post('/obtener-solicitudes', [SolicitudController::class, 'ObtenerSolicitudes']);
     Route::post('/obtener-solicitudes-anuncio', [SolicitudController::class, 'ObtenerSolicitudesAnuncio']);

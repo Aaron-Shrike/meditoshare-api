@@ -10,4 +10,6 @@ class Anuncio extends Model
     use HasFactory;
 
     protected $table = 'anuncio';
+
+    protected $primaryKey = 'id_anuncio';
 }
