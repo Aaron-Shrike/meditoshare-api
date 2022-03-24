@@ -43,6 +43,95 @@ class AnuncioController extends Controller
         }
     }
 
+    public function ObtenerAnunciosFechaAscendente()
+    {
+        try
+        {
+            $consulta = 
+            Anuncio::select('id_anuncio AS codigoAnuncio', 'fecha_anuncio AS fechaAnuncio',
+                DB::raw('date_format(fecha_anuncio, "%d/%m/%Y") AS formatoFechaAnuncio'),
+                'anuncio.nombre', 'anuncio.descripcion', 'concentracion', 'presentacion', 
+                'fecha_vencimiento AS fechaVencimiento','cantidad', 
+                DB::raw('date_format(fecha_vencimiento, "%d/%m/%Y") AS formatoFechaVencimiento'),
+                'requiere_receta AS requiereReceta', 'requiere_diagnostico AS requiereDiagnostico', 
+                'departamento.descripcion AS departamento', 'distrito.descripcion AS distrito')
+            ->join('usuario', 'anuncio.dni_donante', '=', 'usuario.dni')
+            ->join('departamento', 'usuario.id_departamento', '=', 'departamento.id_departamento')
+            ->join('distrito', 'usuario.id_distrito', '=', 'distrito.id_distrito')
+            ->where('activo', '=', 1)
+            ->orderBy('fecha_anuncio', 'ASC')
+            ->take(10)->get();
+            
+            return response($consulta);
+        }
+        catch (\Exception $ex) 
+        {
+            $data = $ex->getMessage();
+            
+            return response($data, 400);
+        }
+    }
+
+    public function ObtenerAnunciosRequiereReceta($requiere)
+    {
+        try
+        {
+            $consulta = 
+            Anuncio::select('id_anuncio AS codigoAnuncio', 'fecha_anuncio AS fechaAnuncio',
+                DB::raw('date_format(fecha_anuncio, "%d/%m/%Y") AS formatoFechaAnuncio'),
+                'anuncio.nombre', 'anuncio.descripcion', 'concentracion', 'presentacion', 
+                'fecha_vencimiento AS fechaVencimiento','cantidad', 
+                DB::raw('date_format(fecha_vencimiento, "%d/%m/%Y") AS formatoFechaVencimiento'),
+                'requiere_receta AS requiereReceta', 'requiere_diagnostico AS requiereDiagnostico', 
+                'departamento.descripcion AS departamento', 'distrito.descripcion AS distrito')
+            ->join('usuario', 'anuncio.dni_donante', '=', 'usuario.dni')
+            ->join('departamento', 'usuario.id_departamento', '=', 'departamento.id_departamento')
+            ->join('distrito', 'usuario.id_distrito', '=', 'distrito.id_distrito')
+            ->where('requiere_receta', '=', $requiere)
+            ->where('activo', '=', 1)
+            ->orderBy('fecha_anuncio', 'DESC')
+            ->take(10)->get();
+            
+            return response($consulta);
+        }
+        catch (\Exception $ex) 
+        {
+            $data = $ex->getMessage();
+            
+            return response($data, 400);
+        }
+    }
+
+    public function ObtenerAnunciosRequiereDiagnostico($requiere)
+    {
+        try
+        {
+            $consulta = 
+            Anuncio::select('id_anuncio AS codigoAnuncio', 'fecha_anuncio AS fechaAnuncio',
+                DB::raw('date_format(fecha_anuncio, "%d/%m/%Y") AS formatoFechaAnuncio'),
+                'anuncio.nombre', 'anuncio.descripcion', 'concentracion', 'presentacion', 
+                'fecha_vencimiento AS fechaVencimiento','cantidad', 
+                DB::raw('date_format(fecha_vencimiento, "%d/%m/%Y") AS formatoFechaVencimiento'),
+                'requiere_receta AS requiereReceta', 'requiere_diagnostico AS requiereDiagnostico', 
+                'departamento.descripcion AS departamento', 'distrito.descripcion AS distrito')
+            ->join('usuario', 'anuncio.dni_donante', '=', 'usuario.dni')
+            ->join('departamento', 'usuario.id_departamento', '=', 'departamento.id_departamento')
+            ->join('distrito', 'usuario.id_distrito', '=', 'distrito.id_distrito')
+            ->where('requiere_diagnostico', '=', $requiere)
+            ->where('activo', '=', 1)
+            ->orderBy('fecha_anuncio', 'DESC')
+            ->take(10)->get();
+            
+            return response($consulta);
+        }
+        catch (\Exception $ex) 
+        {
+            $data = $ex->getMessage();
+            
+            return response($data, 400);
+        }
+    }
+
     public function ObtenerAnunciosUsuario(Request $request)
     {
         try
@@ -52,18 +141,21 @@ class AnuncioController extends Controller
             ]);
 
             $consulta = 
-                Anuncio::select('id_anuncio AS codigoAnuncio', 'fecha_anuncio AS fechaAnuncio', 
+                Anuncio::select('anuncio.id_anuncio AS codigoAnuncio', 'fecha_anuncio AS fechaAnuncio', 
                     DB::raw('date_format(fecha_anuncio, "%d/%m/%Y") AS formatoFechaAnuncio'),
                     'anuncio.nombre', 'anuncio.descripcion', 'concentracion', 'presentacion', 
-                    'fecha_vencimiento AS fechaVencimiento','cantidad', 
+                    'fecha_vencimiento AS fechaVencimiento','cantidad', 'activo',
                     DB::raw('date_format(fecha_vencimiento, "%d/%m/%Y") AS formatoFechaVencimiento'),
-                    'requiere_receta AS requiereReceta', 'requiere_diagnostico AS requiereDiagnostico', 
-                    'departamento.descripcion AS departamento', 'distrito.descripcion AS distrito')
+                    'requiere_receta AS requiereReceta', 'requiere_diagnostico AS requiereDiagnostico',
+                    'departamento.descripcion AS departamento', 'distrito.descripcion AS distrito',
+                    DB::raw('COUNT(solicitud.id_anuncio) AS solicitudes'))
                 ->join('usuario', 'anuncio.dni_donante', '=', 'usuario.dni')
+                ->leftjoin('solicitud', 'anuncio.id_anuncio', '=', 'solicitud.id_anuncio')
                 ->join('departamento', 'usuario.id_departamento', '=', 'departamento.id_departamento')
                 ->join('distrito', 'usuario.id_distrito', '=', 'distrito.id_distrito')
                 ->where('dni_donante', '=', $request['dni'])
                 ->orderBy('fecha_anuncio', 'DESC')
+                ->groupBy('anuncio.id_anuncio')
                 ->take(10)->get();
             
             return response($consulta);
@@ -133,6 +225,30 @@ class AnuncioController extends Controller
     public function update(Request $request, $id)
     {
         //
+    }
+
+    public function FinalizarAnuncio(Request $request)
+    {
+        try
+        {
+            $request->validate([
+                'codigoAnuncio' => 'required',
+            ]);
+
+            $consulta = Anuncio::where('id_anuncio', '=', $request->codigoAnuncio)->first();
+
+            $consulta->activo = false;
+
+            $consulta->save();
+
+            return response("OK");
+        }
+        catch (\Exception $ex) 
+        {
+            $data = $ex->getMessage();
+            
+            return response($data, 400);
+        }
     }
 
     /**

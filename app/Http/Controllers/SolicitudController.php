@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Anuncio;
 use App\Models\Solicitud;
+use DateTime;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 
 class SolicitudController extends Controller
 {
@@ -24,9 +25,63 @@ class SolicitudController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function CrearSolicitud(Request $request)
     {
-        //
+        try
+        {
+            $request->validate([
+                'codigoAnuncio' => 'required',
+                'dniSolicitante' => 'required',
+            ]);
+
+            $data = array();
+
+            $consulta = 
+                Anuncio::select('dni_donante AS dniDonante')
+                ->where('id_anuncio', '=', $request->codigoAnuncio)
+                ->first();
+
+            if($consulta['dniDonante'] != $request['dniSolicitante'])
+            {
+                $consulta2 = 
+                    Solicitud::where('id_anuncio', '=', $request->codigoAnuncio)
+                    ->where('dni_solicitante', '=', $request->dniSolicitante)
+                    ->where('id_estado', '=', 1)
+                    ->count();
+
+                if($consulta2 == 0)
+                {
+                    $obj = new Solicitud();
+                    $obj->id_anuncio = $request->codigoAnuncio;
+                    $obj->dni_solicitante = $request->dniSolicitante;
+                    $obj->fecha_solicitud = new DateTime();
+                    $obj->id_estado = 1;
+                    $obj->fecha_estado = new DateTime();
+
+                    $obj->save();
+
+                    $data = "OK";
+                }
+                else
+                {
+                    $data['error'] = true;
+                    $data['mensaje'] = "Ya tiene una solicitud registrada.";
+                }
+            }
+            else
+            {
+                $data['error'] = true;
+                $data['mensaje'] = "No puede solicitar su anuncio.";
+            }
+
+            return response($data);
+        }
+        catch (\Exception $ex) 
+        {
+            $data = $ex->getMessage();
+            
+            return response($data, 400);
+        }
     }
 
     /**

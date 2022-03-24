@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Solicitud;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UsuarioController extends Controller
@@ -32,6 +33,7 @@ class UsuarioController extends Controller
                     $consulta = 
                         Usuario::select('nombre', 'apellido_paterno AS apellidoPaterno', 
                             'apellido_materno AS apellidoMaterno', 'dni', 'fecha_nacimiento AS fechaNacimiento',
+                            DB::raw('date_format(fecha_nacimiento, "%d/%m/%Y") AS formatoFecha'),
                             'usuario.id_departamento AS codigoDepartamento', 
                             'departamento.descripcion AS departamento', 'usuario.id_provincia AS codigoProvincia', 
                             'provincia.descripcion AS provincia', 'usuario.id_distrito AS codigoDistrito', 
@@ -42,11 +44,11 @@ class UsuarioController extends Controller
                         ->where('dni','=',$request->dni)
                         ->first();
                     
-                    $formato_fecha = date("d/m/Y", strtotime($consulta['fechaNacimiento']));
-
+                        
                     $data = $consulta;
-
-                    $data['formatoFecha'] = $formato_fecha;
+                        
+                    // $formato_fecha = date("d/m/Y", strtotime($consulta['fechaNacimiento']));
+                    // $data['formatoFecha'] = $formato_fecha;
                 }
                 else
                 {
@@ -154,6 +156,7 @@ class UsuarioController extends Controller
                 $consulta = 
                     Usuario::select('nombre', 'apellido_paterno AS apellidoPaterno', 
                         'apellido_materno AS apellidoMaterno', 'dni', 'fecha_nacimiento AS fechaNacimiento',
+                        DB::raw('date_format(fecha_nacimiento, "%d/%m/%Y") AS formatoFecha'),
                         'departamento.descripcion AS departamento', 'provincia.descripcion AS provincia',
                         'distrito.descripcion AS distrito', 'direccion', 'telefono', 'correo')
                     ->join('departamento', 'usuario.id_departamento', '=', 'departamento.id_departamento')
@@ -162,11 +165,11 @@ class UsuarioController extends Controller
                     ->where('dni','=', $request['dniSolicitante'])
                     ->first();
                 
-                $formato_fecha = date("d/m/Y", strtotime($consulta['fechaNacimiento']));
-
+                    
                 $data = $consulta;
-
-                $data['formatoFecha'] = $formato_fecha;
+                    
+                // $formato_fecha = date("d/m/Y", strtotime($consulta['fechaNacimiento']));
+                // $data['formatoFecha'] = $formato_fecha;
             }
             else
             {
