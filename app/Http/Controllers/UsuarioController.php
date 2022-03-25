@@ -189,6 +189,58 @@ class UsuarioController extends Controller
         }
     }
 
+    public function ObtenerPerfilDonante(Request $request)
+    {
+        try
+        {
+            $request->validate([
+                'dniUsuario' => 'required',
+                'dniDonante' => 'required',
+            ]);
+            
+            $data=array();
+
+            $consulta = 
+                Solicitud::join('anuncio', 'solicitud.id_anuncio', '=', 'anuncio.id_anuncio')
+                ->where('dni_solicitante','=', $request['dniUsuario'])
+                ->where('anuncio.dni_donante','=', $request['dniDonante'])
+                ->where('id_estado','=', 1)
+                ->count();
+
+            if($consulta > 0)
+            {
+                $consulta = 
+                    Usuario::select('nombre', 'apellido_paterno AS apellidoPaterno', 
+                        'apellido_materno AS apellidoMaterno', 'dni', 'fecha_nacimiento AS fechaNacimiento',
+                        DB::raw('date_format(fecha_nacimiento, "%d/%m/%Y") AS formatoFecha'),
+                        'departamento.descripcion AS departamento', 'provincia.descripcion AS provincia',
+                        'distrito.descripcion AS distrito', 'direccion', 'telefono', 'correo')
+                    ->join('departamento', 'usuario.id_departamento', '=', 'departamento.id_departamento')
+                    ->join('provincia', 'usuario.id_provincia', '=', 'provincia.id_provincia')
+                    ->join('distrito', 'usuario.id_distrito', '=', 'distrito.id_distrito')
+                    ->where('dni','=', $request['dniDonante'])
+                    ->first();
+
+                $data = $consulta;
+            }
+            else
+            {
+                $data = [
+                    'error' => false,
+                    'mensaje' => "No tiene solicitudes aceptadas."
+                ];
+            }
+            
+            return response($data);
+        }
+        catch (\Exception $ex) 
+        {
+            $data = $ex->getMessage();
+            
+            return response($data, 400);
+        }
+    }
+
     /**
      * Update the specified resource in storage.
      *

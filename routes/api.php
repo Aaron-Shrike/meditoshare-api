@@ -62,6 +62,7 @@ Route::post('/crear-usuario', [UsuarioController::class, 'CrearUsuario']);
     Route::post('/crear-solicitud', [SolicitudController::class, 'CrearSolicitud']);
     // PERFIL - SOLICITUD
     Route::post('/obtener-perfil-solicitante', [UsuarioController::class, 'ObtenerPerfilSolicitante']);
+    Route::post('/obtener-perfil-donante', [UsuarioController::class, 'ObtenerPerfilDonante']);
     Route::post('/obtener-recetas-solicitante', [RecetaController::class, 'ObtenerRecetas']);
     Route::post('/obtener-diagnosticos-solicitante', [DiagnosticoController::class, 'ObtenerDiagnosticos']);
     Route::post('/obtener-calificaciones-solicitante', [SolicitudController::class, 'ObtenerCalificacionesSolicitante']);

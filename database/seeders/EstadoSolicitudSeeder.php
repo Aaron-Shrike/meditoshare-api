@@ -16,15 +16,19 @@ class EstadoSolicitudSeeder extends Seeder
     {
         // Activo
         $obj = new EstadoSolicitud();
-        $obj->descripcion = 'Activo';
+        $obj->descripcion = 'Registrada';
+        $obj->save();
+        // Activo
+        $obj = new EstadoSolicitud();
+        $obj->descripcion = 'Aceptada';
         $obj->save();
         // Rechazado
         $obj = new EstadoSolicitud();
-        $obj->descripcion = 'Rechazado';
+        $obj->descripcion = 'Rechazada';
         $obj->save();
         // Entregado
         $obj = new EstadoSolicitud();
-        $obj->descripcion = 'Entregado';
+        $obj->descripcion = 'Entregada';
         $obj->save();
     }
 }

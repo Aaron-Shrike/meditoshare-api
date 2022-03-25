@@ -131,7 +131,7 @@ class SolicitudController extends Controller
                     'puntaje','comentario', 'anuncio.nombre AS nombreMedicamento')
                 ->join('anuncio', 'solicitud.id_anuncio', '=', 'anuncio.id_anuncio')
                 ->where('dni_solicitante', '=', $request->dniSolicitante)
-                ->where('id_estado','=', 3)
+                ->where('id_estado','=', 4)
                 ->orderBy('fecha_estado', 'DESC')
                 ->take(10)->get();
 
