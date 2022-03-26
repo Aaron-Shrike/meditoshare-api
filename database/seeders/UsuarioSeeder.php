@@ -16,7 +16,7 @@ class UsuarioSeeder extends Seeder
     public function run()
     {
         //
-        // Usuario 1
+        // Usuario 1 - 20 Anuncios
         $obj = new Usuario();
         $obj->dni = "12345671";
         $obj->id_distrito = 1;
@@ -29,7 +29,7 @@ class UsuarioSeeder extends Seeder
         $obj->direccion = "Asent. H. Las maravillas Mz. H Lt. 05";
         $obj->telefono = "978488529";
         $obj->correo = "aaronrv138@gmail.com";
-        $obj->contrasenia = Hash::make("1234");
+        $obj->contrasenia = Hash::make("12345678");
         $obj->save();
         // Usuario 2
         $obj = new Usuario();
@@ -44,7 +44,7 @@ class UsuarioSeeder extends Seeder
         $obj->direccion = "Av. Ramon Castilla 01";
         $obj->telefono = "978488529";
         $obj->correo = "rramirezb@unprg.edu.pe";
-        $obj->contrasenia = Hash::make("1234");
+        $obj->contrasenia = Hash::make("12345678");
         $obj->save();
         // Usuario 3
         $obj = new Usuario();
@@ -59,7 +59,7 @@ class UsuarioSeeder extends Seeder
         $obj->direccion = "Pr. Garcilazo de la vega n.4";
         $obj->telefono = "975487526";
         $obj->correo = "dvilasf@unprg.edu.pe";
-        $obj->contrasenia = Hash::make("1234");
+        $obj->contrasenia = Hash::make("12345678");
         $obj->save();
     }
 }

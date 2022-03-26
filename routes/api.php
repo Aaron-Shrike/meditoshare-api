@@ -59,7 +59,10 @@ Route::post('/crear-usuario', [UsuarioController::class, 'CrearUsuario']);
     // SOLICITUDES
     Route::post('/obtener-solicitudes', [SolicitudController::class, 'ObtenerSolicitudes']);
     Route::post('/obtener-solicitudes-anuncio', [SolicitudController::class, 'ObtenerSolicitudesAnuncio']);
-    Route::post('/crear-solicitud', [SolicitudController::class, 'CrearSolicitud']);
+    Route::post('/crear-solicitud-anuncio', [SolicitudController::class, 'CrearSolicitudAnuncio']);
+    Route::post('/aprobar-solicitud-anuncio', [SolicitudController::class, 'AprobarSolicitudAnuncio']);
+    Route::post('/rechazar-solicitud-anuncio', [SolicitudController::class, 'RechazarSolicitudAnuncio']);
+    Route::post('/calificar-solicitud-anuncio', [SolicitudController::class, 'CalificarSolicitudAnuncio']);
     // PERFIL - SOLICITUD
     Route::post('/obtener-perfil-solicitante', [UsuarioController::class, 'ObtenerPerfilSolicitante']);
     Route::post('/obtener-perfil-donante', [UsuarioController::class, 'ObtenerPerfilDonante']);

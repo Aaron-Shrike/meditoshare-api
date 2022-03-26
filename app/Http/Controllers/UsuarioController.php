@@ -204,7 +204,7 @@ class UsuarioController extends Controller
                 Solicitud::join('anuncio', 'solicitud.id_anuncio', '=', 'anuncio.id_anuncio')
                 ->where('dni_solicitante','=', $request['dniUsuario'])
                 ->where('anuncio.dni_donante','=', $request['dniDonante'])
-                ->where('id_estado','=', 1)
+                ->where('id_estado','=', 2)
                 ->count();
 
             if($consulta > 0)

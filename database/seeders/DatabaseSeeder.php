@@ -22,7 +22,8 @@ class DatabaseSeeder extends Seeder
         $this->call(RecetaSeeder::class);
         $this->call(DiagnosticoSeeder::class);
         $this->call(EstadoSolicitudSeeder::class);
-        $this->call(AnuncioSeeder::class);
+        // $this->call(AnuncioSeeder::class);
+        \App\Models\Anuncio::factory()->count(20)->create();
         $this->call(SolicitudSeeder::class);
     }
 }
