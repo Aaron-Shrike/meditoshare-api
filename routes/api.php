@@ -49,12 +49,13 @@ Route::post('/crear-usuario', [UsuarioController::class, 'CrearUsuario']);
     Route::post('/borrar-receta', [RecetaController::class, 'BorrarReceta']);
     Route::post('/borrar-diagnostico', [DiagnosticoController::class, 'BorrarDiagnostico']);
     // ANUNCIOS
+    // Route::get('/obtener-anuncios/{pagina}/{busqueda?}', [AnuncioController::class, 'ObtenerAnuncios']);
     Route::get('/obtener-anuncios', [AnuncioController::class, 'ObtenerAnuncios']);
     Route::get('/obtener-anuncios-ascendente', [AnuncioController::class, 'ObtenerAnunciosFechaAscendente']);
     Route::get('/obtener-anuncios-requiere-receta/{requiere}', [AnuncioController::class, 'ObtenerAnunciosRequiereReceta']);
     Route::get('/obtener-anuncios-requiere-diagnostico/{requiere}', [AnuncioController::class, 'ObtenerAnunciosRequiereDiagnostico']);
     Route::post('/crear-anuncio', [AnuncioController::class, 'CrearAnuncio']);
-    Route::post('/obtener-anuncios', [AnuncioController::class, 'ObtenerAnunciosUsuario']);
+    Route::post('/obtener-anuncios-usuario', [AnuncioController::class, 'ObtenerAnunciosUsuario']);
     Route::post('/finalizar-anuncio', [AnuncioController::class, 'FinalizarAnuncio']);
     // SOLICITUDES
     Route::post('/obtener-solicitudes', [SolicitudController::class, 'ObtenerSolicitudes']);

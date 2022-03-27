@@ -180,6 +180,7 @@ class SolicitudController extends Controller
 
             $data = array();
 
+            //calificar solicitud
             $consulta = 
                 Solicitud::select()
                 ->where('dni_solicitante', '=', $request->dniSolicitante)
@@ -194,6 +195,21 @@ class SolicitudController extends Controller
                 $consulta->fecha_estado = new DateTime();
 
                 $consulta->save();
+
+                //rechazar solicitudes de anuncio
+                $consulta = Solicitud::where('id_anuncio', '=', $request->codigoAnuncio)
+                    ->where('id_estado', '!=', 4)->get();
+
+                foreach($consulta as $key => $fila)
+                {
+                    $fila->id_estado = 3;
+                    $fila->motivo_rechazo = "Anuncio entregado a otro usuario";
+                    $fila->save();
+                }
+
+                //finalizar anuncio
+                $consulta = Anuncio::where('id_anuncio', '=', $request->codigoAnuncio)
+                    ->update(['activo' => "0"]);
             }
             else
             {
@@ -225,6 +241,19 @@ class SolicitudController extends Controller
                 'dni' => 'required',
             ]);
 
+            $data = array();
+            $pagina = $_GET['pagina'];
+
+            $consulta = 
+                Solicitud::select('id_anuncio')
+                ->where('dni_solicitante', '=', $request['dni'])
+                ->get();
+            $total_solicitudes = $consulta->count();
+
+            $paginas = ceil($total_solicitudes/10);
+
+            $solicitud_inicial = ($pagina * 10) - 9 - 1;
+
             $consulta =
                 Solicitud::select('anuncio.id_anuncio AS codigoAnuncio', 'dni_donante AS dniDonante',
                 'fecha_anuncio AS fechaAnuncio', 
@@ -241,9 +270,17 @@ class SolicitudController extends Controller
                 ->join('distrito', 'usuario.id_distrito', '=', 'distrito.id_distrito')
                 ->where('dni_solicitante', '=', $request['dni'])
                 ->orderBy('fecha_solicitud', 'DESC')
-                ->take(10)->get();
+                ->offset($solicitud_inicial)
+                ->limit(10)->get();
+
+            $data = [
+                'pagina' => $pagina,
+                'solicitudes' => $consulta,
+                'totalPaginas' => $paginas,
+                'totalSolicitudes' => $total_solicitudes,
+            ];
             
-            return response($consulta);
+            return response($data);
         }
         catch (\Exception $ex) 
         {
@@ -261,6 +298,19 @@ class SolicitudController extends Controller
                 'codigoAnuncio' => 'required',
             ]);
 
+            $data = array();
+            $pagina = $_GET['pagina'];
+
+            $consulta = 
+                Solicitud::select('id_anuncio')
+                ->where('id_anuncio', '=', $request['codigoAnuncio'])
+                ->get();
+            $total_solicitudes = $consulta->count();
+
+            $paginas = ceil($total_solicitudes/10);
+
+            $solicitud_inicial = ($pagina * 10) - 9 - 1;
+
             $consulta =
                 Solicitud::select('id_anuncio AS codigoAnuncio', 'dni_solicitante AS dniSolicitante',
                     'nombre', 'apellido_paterno AS apellidoPaterno', 'apellido_materno AS apellidoMaterno',
@@ -272,9 +322,17 @@ class SolicitudController extends Controller
                 ->join('estado_solicitud', 'solicitud.id_estado', '=', 'estado_solicitud.id_estado')
                 ->where('id_anuncio', '=', $request['codigoAnuncio'])
                 ->orderBy('fecha_solicitud', 'DESC')
-                ->take(10)->get();
+                ->offset($solicitud_inicial)
+                ->limit(10)->get();
+
+            $data = [
+                'pagina' => $pagina,
+                'solicitudes' => $consulta,
+                'totalPaginas' => $paginas,
+                'totalSolicitudes' => $total_solicitudes,
+            ];
             
-            return response($consulta);
+            return response($data);
         }
         catch (\Exception $ex) 
         {
@@ -293,6 +351,18 @@ class SolicitudController extends Controller
             ]);
 
             $data = array();
+            $pagina = $_GET['pagina'];
+
+            $consulta = 
+                Solicitud::select('id_anuncio')
+                ->where('dni_solicitante', '=', $request['dniSolicitante'])
+                ->where('id_estado','=', 4)
+                ->get();
+            $total_solicitudes = $consulta->count();
+
+            $paginas = ceil($total_solicitudes/10);
+
+            $solicitud_inicial = ($pagina * 10) - 9 - 1;
 
             $consulta = 
                 Solicitud::select('solicitud.id_anuncio AS codigoAnuncio', 'fecha_estado AS fechaEstado', 
@@ -301,13 +371,19 @@ class SolicitudController extends Controller
                 ->where('dni_solicitante', '=', $request->dniSolicitante)
                 ->where('id_estado','=', 4)
                 ->orderBy('fecha_estado', 'DESC')
-                ->take(10)->get();
+                ->offset($solicitud_inicial)
+                ->limit(10)->get();
 
             $consulta2 = Solicitud::avg('puntaje');
 
             $data = [
-                'puntajePromedio' => $consulta2,
-                'calificaciones' => $consulta
+                'pagina' => $pagina,
+                'solicitudes' => [
+                    'puntajePromedio' => $consulta2,
+                    'calificaciones' => $consulta
+                ],
+                'totalPaginas' => $paginas,
+                'totalSolicitudes' => $total_solicitudes,
             ];
             
             return response($data);
