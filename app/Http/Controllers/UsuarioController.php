@@ -75,6 +75,51 @@ class UsuarioController extends Controller
             return response($data, 400);
         }
     }
+    
+    public function ObtenerUsuario(Request $request)
+    {
+        try
+        {
+            $request->validate([
+                'dni' => 'required',
+            ]);
+            
+            $data=array();
+
+            $consulta = Usuario::select('nombre', 'apellido_paterno AS apellidoPaterno', 
+                    'apellido_materno AS apellidoMaterno', 'dni', 'fecha_nacimiento AS fechaNacimiento',
+                    DB::raw('date_format(fecha_nacimiento, "%d/%m/%Y") AS formatoFecha'),
+                    'usuario.id_departamento AS codigoDepartamento', 
+                    'departamento.descripcion AS departamento', 'usuario.id_provincia AS codigoProvincia', 
+                    'provincia.descripcion AS provincia', 'usuario.id_distrito AS codigoDistrito', 
+                    'distrito.descripcion AS distrito', 'direccion', 'telefono', 'correo')
+                ->join('departamento', 'usuario.id_departamento', '=', 'departamento.id_departamento')
+                ->join('provincia', 'usuario.id_provincia', '=', 'provincia.id_provincia')
+                ->join('distrito', 'usuario.id_distrito', '=', 'distrito.id_distrito')
+                ->where('dni','=',$request->dni)
+                ->first();
+
+            if(isset($consulta['dni']))
+            {
+                $data = $consulta;
+            }
+            else
+            {
+                $data = [
+                    'error' => false,
+                    'mensaje' => "Usuario no registrado."
+                ];
+            }
+            
+            return response($data);
+        }
+        catch (\Exception $ex) 
+        {
+            $data = $ex->getMessage();
+            
+            return response($data, 400);
+        }
+    }
 
     /**
      * Store a newly created resource in storage.
