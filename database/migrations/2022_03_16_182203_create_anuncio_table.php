@@ -22,11 +22,11 @@ class CreateAnuncioTable extends Migration
             $table->string('descripcion', 255)->nullable();
             $table->string('concentracion', 20);
             $table->string('presentacion', 20);
-            $table->date('fecha_vencimiento'); //ver
-            $table->string('cantidad', 5); //ver
+            $table->date('fecha_vencimiento');
+            $table->tinyInteger('cantidad')->unsigned(); 
             $table->boolean('requiere_receta');
             $table->boolean('requiere_diagnostico');
-            $table->boolean('activo'); // ver
+            $table->boolean('activo'); 
             $table->timestamps();
 
             $table->foreign('dni_donante')

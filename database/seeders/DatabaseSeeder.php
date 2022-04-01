@@ -18,12 +18,12 @@ class DatabaseSeeder extends Seeder
         $this->call(DepartamentoSeeder::class);
         $this->call(ProvinciaSeeder::class);
         $this->call(DistritoSeeder::class);
-        $this->call(UsuarioSeeder::class);
-        $this->call(RecetaSeeder::class);
-        $this->call(DiagnosticoSeeder::class);
+        // $this->call(UsuarioSeeder::class);
+        // $this->call(RecetaSeeder::class);
+        // $this->call(DiagnosticoSeeder::class);
         $this->call(EstadoSolicitudSeeder::class);
         // $this->call(AnuncioSeeder::class);
-        \App\Models\Anuncio::factory()->count(20)->create();
-        $this->call(SolicitudSeeder::class);
+        // \App\Models\Anuncio::factory()->count(20)->create();
+        // $this->call(SolicitudSeeder::class);
     }
 }

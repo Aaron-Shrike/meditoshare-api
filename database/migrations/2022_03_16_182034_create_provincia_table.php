@@ -14,7 +14,7 @@ class CreateProvinciaTable extends Migration
     public function up()
     {
         Schema::create('provincia', function (Blueprint $table) {
-            $table->smallInteger('id_provincia')->unsigned()->autoIncrement(); //ver
+            $table->smallInteger('id_provincia')->unsigned()->autoIncrement();
             
             $table->tinyInteger('id_departamento')->unsigned();
             $table->string('descripcion', 30);

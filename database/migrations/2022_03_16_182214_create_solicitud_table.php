@@ -21,7 +21,7 @@ class CreateSolicitudTable extends Migration
             $table->dateTime('fecha_solicitud');
             $table->dateTime('fecha_estado');
             $table->string('motivo_rechazo', 255)->nullable();
-            $table->char('puntaje', 1)->nullable(); //ver
+            $table->char('puntaje', 1)->nullable();
             $table->string('comentario', 255)->nullable();
             $table->timestamps();
 

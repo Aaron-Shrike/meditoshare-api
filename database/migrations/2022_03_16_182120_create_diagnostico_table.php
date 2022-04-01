@@ -17,8 +17,8 @@ class CreateDiagnosticoTable extends Migration
             $table->bigInteger('id_diagnostico')->unsigned()->autoIncrement();
 
             $table->char('dni', 8);
-            $table->string('nombre_diagnostico',70); //ver
-            $table->string('url_diagnostico'); //ver
+            $table->string('nombre_diagnostico', 70);
+            $table->string('url_diagnostico', 255);
             $table->timestamps();
 
             $table->foreign('dni')

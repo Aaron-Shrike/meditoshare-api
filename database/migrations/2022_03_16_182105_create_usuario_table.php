@@ -14,7 +14,7 @@ class CreateUsuarioTable extends Migration
     public function up()
     {
         Schema::create('usuario', function (Blueprint $table) {
-            $table->char('dni', 8)->unique(); //ver
+            $table->char('dni', 8)->unique();
 
             $table->smallInteger('id_distrito')->unsigned();
             $table->smallInteger('id_provincia')->unsigned();
@@ -22,12 +22,11 @@ class CreateUsuarioTable extends Migration
             $table->string('nombre', 50);
             $table->string('apellido_paterno', 50);
             $table->string('apellido_materno', 50);
-            $table->date('fecha_nacimiento'); //ver
+            $table->date('fecha_nacimiento');
             $table->string('direccion', 95);
-            $table->string('telefono', 9); //ver
+            $table->string('telefono', 9);
             $table->string('correo', 255)->unique();
             $table->string('contrasenia', 60);
-            // $table->string('estado', 10);
             $table->timestamps();
 
             $table->primary('dni');

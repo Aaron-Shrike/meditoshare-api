@@ -17,8 +17,8 @@ class CreateRecetaTable extends Migration
             $table->bigInteger('id_receta')->unsigned()->autoIncrement();
 
             $table->char('dni', 8);
-            $table->string('nombre_receta', 70); //ver
-            $table->string('url_receta'); //ver
+            $table->string('nombre_receta', 70);
+            $table->string('url_receta', 255);
             $table->timestamps();
 
             $table->foreign('dni')
