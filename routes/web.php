@@ -18,6 +18,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/storage-link', function () {
+Route::get('storage-link', function () {
     Artisan::call('storage:link');
 });
