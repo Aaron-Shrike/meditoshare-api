@@ -4,9 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Models\Anuncio;
 use App\Models\Solicitud;
+use App\Models\Usuario;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+
+// Update the path below to your autoload.php, 
+// see https://getcomposer.org/doc/01-basic-usage.md 
+require base_path() . '/vendor/autoload.php'; 
+
+use Twilio\Rest\Client; 
+
+// $dotenv = Dotenv\Dotenv::create(base_path());
+// $dotenv->load();
 
 class SolicitudController extends Controller
 {
@@ -33,6 +43,7 @@ class SolicitudController extends Controller
             $request->validate([
                 'codigoAnuncio' => 'required',
                 'dniSolicitante' => 'required',
+                'urgente' => 'required',
             ]);
 
             $data = array();
@@ -62,6 +73,36 @@ class SolicitudController extends Controller
                     $obj->save();
 
                     $data = "OK";
+
+                    //enviar mensaje de wpp
+                    if($request->urgente)
+                    {
+                        $consulta3 = 
+                            Anuncio::select('telefono', 'anuncio.nombre AS nombreAnuncio', 'presentacion', 
+                                'usuario.nombre AS nombreUsuario', 'apellido_paterno AS apellidoPaterno',
+                                'apellido_materno AS apellidoMaterno')
+                            ->join('usuario', 'anuncio.dni_donante', '=', 'usuario.dni')
+                            ->where('id_anuncio', '=', $request->codigoAnuncio)
+                            ->first();
+
+                        $sid    = env('TWILIO_ACCOUNT_SID'); 
+                        $token  = env('TWILIO_AUTH_TOKEN'); 
+                        $twilio = new Client($sid, $token); 
+                        
+                        $contenido_mensaje = "Tiene una solicitud con carácter de URGENCIA.\nPor parte de " . $consulta3['nombreUsuario'] . " " . $consulta3['apellidoPaterno'] . " " . $consulta3['apellidoMaterno'] . " en su anuncio del medicamento ". $consulta3['nombreMedicamento'] . "(". $consulta3['presentacion'] . ").\nAcceda a su cuenta en https://meditoshare.netlify.app/\n\t- MediToShare -";
+
+                        $message = $twilio->messages 
+                                        ->create("whatsapp:+51".$consulta3['telefono'], // to 
+                                                array( 
+                                                    "from" => "whatsapp:".env('TWILIO_NUMBER'),       
+                                                    "body" => $contenido_mensaje 
+                                                ) 
+                                        ); 
+                        
+                        $data = $message->sid;
+                    }
+
+                    // $data = "OK";
                 }
                 else
                 {
